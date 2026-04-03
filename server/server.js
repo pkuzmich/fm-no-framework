@@ -8,7 +8,7 @@ const AppImport = require("../src/App.jsx");
 
 const App = AppImport.default;
 
-const MANIFEST = readFileSync(__dirname, "../dist/react-client-manifest.json", "utf-8");
+const MANIFEST = readFileSync(path.join(__dirname, "../dist/react-client-manifest.json"), "utf-8");
 const MODULE_MAP = JSON.parse(MANIFEST);
 const PORT = process.env.PORT ? process.env.PORT : 3000;
 
@@ -35,7 +35,14 @@ fastify.get("/", async function rootHandler(request, reply) {
 });
 
 fastify.get("/react-flight", async function reactFlightHandler(request, reply) {
-  // TODO:
+  try {
+    reply.header("Content-Type", "application/octet-stream");
+    const { pipe } = renderToPipeableStream(React.createElement(App), MODULE_MAP);
+    pipe(reply.raw);
+  } catch (err) {
+    request.log.error("react-flight error: ", err);
+    throw err;
+  }
 });
 
 module.exports = async function start() {

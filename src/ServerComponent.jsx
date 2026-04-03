@@ -1,4 +1,4 @@
-import { AsyncDatabaase } from "promised-sqlite3";
+import { AsyncDatabase } from "promised-sqlite3";
 import path from "node:path";
 
 const SQL_REQUEST = `
@@ -8,7 +8,8 @@ JOIN users f
 ON f.id = n.from_user
 JOIN users t
 ON t.id = n.to_user
-WHERE from_user = ?`;
+WHERE from_user = ?
+`;
 
 const USER_ID = 1;
 
@@ -19,7 +20,7 @@ export default async function MyNotes() {
     console.log("running server function fetchNotes");
 
     const dbPath = path.resolve(__dirname, "../notes.db");
-    const db = await AsyncDatabaase.open(dbPath);
+    const db = await AsyncDatabase.open(dbPath);
     const from = await db.all(SQL_REQUEST, [USER_ID]);
     return { from };
   }
