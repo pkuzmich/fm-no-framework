@@ -18,7 +18,7 @@ export default async function MyNotes() {
   async function fetchNotes() {
     console.log("running server function fetchNotes");
 
-    const dbPath = path.resolve(__dirname, "../../notes.db");
+    const dbPath = path.resolve(__dirname, "../notes.db");
     const db = await AsyncDatabaase.open(dbPath);
     const from = await db.all(SQL_REQUEST, [USER_ID]);
     return { from };

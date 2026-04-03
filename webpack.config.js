@@ -31,7 +31,7 @@ const config = {
     new HtmlWebpackPlugin({
       inject: true,
       publicPath: "/assets",
-      template: "./src/index.html",
+      template: "./index.html",
     }),
     new ReactServerWebpackPlugin({ isServer: false }),
   ],
