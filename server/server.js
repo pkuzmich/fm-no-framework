@@ -1,0 +1,48 @@
+const path = require("node:path");
+const { readFileSync } = require("node:fs");
+const Fastify = require("fastify");
+const fastifyStaticPlugin = require("@fastify/static");
+const React = require("react");
+const { renderToPipeableStream } = require("react-server-dom-webpack/server");
+const AppImport = require("../src/App.jsx");
+
+const App = AppImport.default;
+
+const MANIFEST = readFileSync(__dirname, "../dist/react-client-manifest.json", "utf-8");
+const MODULE_MAP = JSON.parse(MANIFEST);
+const PORT = process.env.PORT ? process.env.PORT : 3000;
+
+const fastify = Fastify({
+  logger: {
+    transport: {
+      target: "pino-pretty",
+    },
+  },
+});
+
+fastify.register(fastifyStaticPlugin, {
+  root: path.join(__dirname, "../dist"),
+  prefix: "/assets/",
+});
+
+fastify.register(fastifyStaticPlugin, {
+  root: path.join(__dirname, "../public"),
+  decorateReply: false,
+});
+
+fastify.get("/", async function rootHandler(request, reply) {
+  return reply.sendFile("index.html");
+});
+
+fastify.get("/react-flight", async function reactFlightHandler(request, reply) {
+  // TODO:
+});
+
+module.exports = async function start() {
+  try {
+    await fastify.listen({ port: PORT });
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
+};
