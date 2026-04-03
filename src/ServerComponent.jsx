@@ -1,4 +1,4 @@
-import { AsyncDatabaase } from "promise-sqlite3";
+import { AsyncDatabaase } from "promised-sqlite3";
 import path from "node:path";
 
 const SQL_REQUEST = `
